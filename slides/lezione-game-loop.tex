@@ -257,23 +257,30 @@ if (x > width - raggio || x < raggio) {
 \begin{frame}[fragile]{Input: il giocatore entra nel gioco}
   \begin{columns}[T]
     \begin{column}{0.6\textwidth}
-      \begin{lstlisting}[style=jsstyle]
+      \begin{lstlisting}[style=jsstyle,basicstyle=\ttfamily\scriptsize]
 if (keyIsDown(LEFT_ARROW) || keyIsDown("a")) {
-  player.x -= player.velocita;
+  player.angle -= player.rotazione;
 }
 
 if (keyIsDown(RIGHT_ARROW) || keyIsDown("d")) {
-  player.x += player.velocita;
+  player.angle += player.rotazione;
+}
+
+if (keyIsDown(UP_ARROW) || keyIsDown("w")) {
+  player.x += Math.cos(player.angle) * velocita;
+  player.y += Math.sin(player.angle) * velocita;
 }
       \end{lstlisting}
     \end{column}
     \begin{column}{0.34\textwidth}
       \centering
       \begin{tikzpicture}
-        \node[draw, rounded corners=5pt, minimum width=0.9cm, minimum height=0.8cm, fill=white] at (0,0) {A};
-        \node[draw, rounded corners=5pt, minimum width=0.9cm, minimum height=0.8cm, fill=white] at (1.1,0) {D};
-        \draw[Blue, thick, -{Latex[length=3mm]}] (-0.45,-0.75) -- (-1.25,-0.75);
-        \draw[Blue, thick, -{Latex[length=3mm]}] (1.55,-0.75) -- (2.35,-0.75);
+        \node[draw, rounded corners=5pt, minimum width=0.9cm, minimum height=0.8cm, fill=white] at (0,0.8) {$\uparrow$};
+        \node[draw, rounded corners=5pt, minimum width=0.9cm, minimum height=0.8cm, fill=white] at (0,-0.3) {$\downarrow$};
+        \node[draw, rounded corners=5pt, minimum width=0.9cm, minimum height=0.8cm, fill=white] at (-1.1,-0.3) {$\leftarrow$};
+        \node[draw, rounded corners=5pt, minimum width=0.9cm, minimum height=0.8cm, fill=white] at (1.1,-0.3) {$\rightarrow$};
+        \draw[Blue, thick, -{Latex[length=3mm]}] (-0.8,-1.05) arc[start angle=210,end angle=320,radius=0.9];
+        \draw[Green, thick, -{Latex[length=3mm]}] (0,-1.9) -- (0,-1.15);
         \player{0.55}{-1.5}
       \end{tikzpicture}
     \end{column}
@@ -301,12 +308,13 @@ if (keyIsDown(RIGHT_ARROW) || keyIsDown("d")) {
 \begin{frame}[fragile]{Array: una lista di proiettili}
   \begin{lstlisting}[style=jsstyle]
 let bullets = [];
+let angle = player.angle;
 
 bullets.push({
   x: player.x,
   y: player.y,
-  vx: player.dirX * 9,
-  vy: player.dirY * 9
+  vx: Math.cos(angle) * 9,
+  vy: Math.sin(angle) * 9
 });
   \end{lstlisting}
   \vspace{0.15cm}
@@ -393,12 +401,13 @@ if (dist(bullet.x, bullet.y, enemy.x, enemy.y)
       \begin{block}{Cosa c'e' dentro}
         \begin{itemize}
           \item game loop;
-          \item player controllato;
-          \item sparo automatico;
-          \item nemici che inseguono;
+          \item arena 1440x960;
+          \item controllo a rotazione;
+          \item sparo automatico singolo o triplo;
+          \item bonus arma e riparazione;
+          \item due tipi di nemici;
           \item collisioni;
-          \item punteggio e vite;
-          \item restart.
+          \item punteggio, vite e restart.
         \end{itemize}
       \end{block}
     \end{column}
@@ -414,6 +423,9 @@ if (dist(bullet.x, bullet.y, enemy.x, enemy.y)
         \enemy{6.4}{0.8}
         \shot{4.5}{2.5}
         \shot{5.15}{2.75}
+        \shot{5.05}{2.25}
+        \draw[fill=Blue!35, draw=Blue, line width=1pt] (2.2,1.1) circle (0.22);
+        \node[white, anchor=west] at (2.55,1.1) {bonus};
         \node[white, anchor=west] at (0.3,4.35) {score: 120};
       \end{tikzpicture}
     \end{column}

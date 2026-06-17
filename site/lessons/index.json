@@ -72,9 +72,9 @@
   {
     "id": "direction",
     "file": "11-direction.js",
-    "title": "Guardare nella direzione giusta",
-    "short": "direzione e mira",
-    "goal": "Memorizziamo l'ultima direzione di movimento per sapere dove sparare."
+    "title": "Ruotare e avanzare",
+    "short": "controllo da navicella",
+    "goal": "Separiamo direzione e movimento: sinistra/destra ruotano, su/giu fanno avanzare o arretrare."
   },
   {
     "id": "single-bullet",
@@ -136,8 +136,7 @@
     "id": "final-shooter",
     "file": "20-final-shooter.js",
     "title": "Mini shooter completo",
-    "short": "tutto insieme",
-    "goal": "Un piccolo gioco completo: movimento, sparo automatico, nemici, collisioni, punteggio e restart."
+    "short": "arena grande e bonus",
+    "goal": "Un gioco completo con canvas 1440x960, controllo a rotazione, bonus arma tripla, riparazioni, nemici diversi, punteggio e restart."
   }
 ]
-

@@ -39,7 +39,7 @@ Punto chiave: una regola di gioco e' spesso un controllo `if`.
 
 ### 4. Controllo
 
-Apri gli step 07-11. Introduci il player come oggetto, poi tastiera e direzione.
+Apri gli step 07-11. Introduci il player come oggetto, poi tastiera e direzione. Nel finale usa il controllo da navicella: sinistra/destra ruotano, su/giu fanno avanzare o arretrare.
 
 Punto chiave: il personaggio non e' il cerchio disegnato, ma i dati che lo descrivono.
 
@@ -51,7 +51,7 @@ Punto chiave: un array permette di gestire un numero variabile di cose.
 
 ### 6. Collisioni e partita
 
-Apri gli step 16-20. Mostra distanza tra cerchi, punteggio, vite, feedback e restart.
+Apri gli step 16-20. Mostra distanza tra cerchi, punteggio, vite, feedback, bonus e restart. Nello step finale il canvas e' piu' grande e introduce un bonus arma: il colpo singolo diventa triplo, con apertura di 20 gradi.
 
 Punto chiave: il gameplay nasce quando gli oggetti iniziano a interagire.
 
@@ -59,6 +59,8 @@ Punto chiave: il gameplay nasce quando gli oggetti iniziano a interagire.
 
 - Cambia il colore del player.
 - Cambia la frequenza di sparo.
+- Cambia la durata del bonus triplo.
+- Cambia l'angolo di apertura del triplo colpo.
 - Rendi i nemici piu' veloci.
 - Aggiungi un secondo tipo di nemico.
 - Aggiungi un power-up che restituisce una vita.
@@ -73,4 +75,3 @@ Per una classe molto giovane conviene lavorare cosi:
 4. passaggio allo step successivo.
 
 Evita di spiegare tutta la sintassi JavaScript all'inizio. Introduci solo i simboli necessari quando appaiono: `let`, `if`, funzioni, oggetti, array.
-
