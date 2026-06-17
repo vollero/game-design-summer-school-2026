@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Arena cooperativa</title>
+    <link rel="stylesheet" href="./css/collab.css" />
+  </head>
+  <body>
+    <main class="arena-shell">
+      <section class="stage-panel">
+        <header class="topbar">
+          <a class="back-link" href="./index.html">Game Loop Lab</a>
+          <div class="score-strip">
+            <span id="connectionStatus">offline</span>
+            <strong id="teamScore">score 0</strong>
+          </div>
+        </header>
+        <div class="canvas-wrap">
+          <canvas id="arenaCanvas" width="1440" height="960"></canvas>
+        </div>
+      </section>
+
+      <aside class="side-panel">
+        <div class="panel-block">
+          <h1>Arena co-op</h1>
+          <p id="selfStatus">Scegli un nome per entrare.</p>
+        </div>
+
+        <form id="joinForm" class="join-form">
+          <label for="nameInput">Nome</label>
+          <input id="nameInput" name="name" maxlength="18" autocomplete="nickname" required />
+          <button type="submit">Entra</button>
+        </form>
+
+        <div class="panel-block">
+          <h2>Squadra</h2>
+          <div id="playerList" class="player-list"></div>
+        </div>
+      </aside>
+    </main>
+
+    <script src="./js/collab.js"></script>
+  </body>
+</html>
+

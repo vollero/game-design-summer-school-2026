@@ -8,6 +8,7 @@ Il progetto contiene:
 - una mini libreria didattica canvas, ispirata a p5.js ma inclusa nel progetto;
 - una progressione di script dal ciclo infinito al mini shooter;
 - un finale con canvas 1440x960, controllo a rotazione, bonus arma tripla e bonus riparazione;
+- una arena cooperativa online con nomi, WebSocket e fuoco amico disabilitato;
 - slide Beamer in LaTeX;
 - PDF delle slide servito dal laboratorio web;
 - container Docker con nginx per servire tutto come sito statico;
@@ -25,17 +26,27 @@ Poi apri:
 http://localhost:8080
 ```
 
-La directory `site/` e' montata come volume dentro nginx. Se modifichi HTML, CSS, JS o lezioni, il cambiamento e' visibile al refresh del browser senza ricostruire l'immagine.
+Arena cooperativa:
+
+```text
+http://localhost:8080/collab.html
+```
+
+La directory del progetto e' montata come volume dentro nginx. Se modifichi HTML, CSS, JS, lezioni o documenti, il cambiamento e' visibile al refresh del browser senza ricostruire l'immagine. Il servizio `collab` gestisce la partita condivisa via WebSocket.
 
 ## Struttura
 
 ```text
 site/
   index.html              laboratorio web
+  collab.html             arena cooperativa multiplayer
   css/styles.css          stile dell'interfaccia
   js/app.js               shell del laboratorio
+  js/collab.js            client arena cooperativa
   js/edu-game.js          mini engine canvas didattico
   lessons/*.js            progressione degli esempi
+server/
+  collab-server.js        server WebSocket co-op senza dipendenze npm
 slides/
   lezione-game-loop.tex   presentazione Beamer
 nginx/
@@ -93,5 +104,6 @@ Il percorso consigliato e':
 4. collegare la tastiera allo stato del gioco;
 5. introdurre liste di oggetti con proiettili e nemici;
 6. chiudere con collisioni, punteggio e game over.
+7. aprire l'arena cooperativa per far entrare piu' studenti nella stessa battaglia.
 
 Ogni step nel laboratorio e' modificabile. Gli studenti possono cambiare numeri, colori e regole e premere `Esegui`.

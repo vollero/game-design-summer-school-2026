@@ -102,9 +102,9 @@ Il compose monta l'intero progetto in sola lettura:
 .:/srv/materiale:ro
 ```
 
-nginx usa `site/` come root web e serve anche `docs/`. Quindi, se lavori direttamente nella cartella clonata sul server, ogni modifica dentro `site/` o `docs/` e' visibile al refresh del browser. Non serve ricostruire il container.
+nginx usa `site/` come root web, serve anche `docs/` e inoltra `/ws` al servizio `collab`, che mantiene lo stato condiviso dell'arena cooperativa. Quindi, se lavori direttamente nella cartella clonata sul server, ogni modifica dentro `site/` o `docs/` e' visibile al refresh del browser. Non serve ricostruire il container.
 
-Per modifiche a `docker-compose.yml`, `.env` o `nginx/default.conf`, riavvia:
+Per modifiche a `docker-compose.yml`, `.env`, `nginx/default.conf` o `server/collab-server.js`, riavvia:
 
 ```bash
 docker compose up -d --force-recreate
@@ -165,6 +165,12 @@ Con HTTPS:
 https://miocorso.duckdns.org
 ```
 
+Arena cooperativa:
+
+```text
+https://miocorso.duckdns.org/collab.html
+```
+
 Con porta 80 HTTP:
 
 ```text
@@ -181,5 +187,6 @@ http://miocorso.duckdns.org:8080
 
 ```bash
 docker compose logs -f web
+docker compose logs -f collab
 docker compose -f docker-compose.yml -f docker-compose.https.yml logs -f caddy
 ```
