@@ -4,7 +4,7 @@ const crypto = require("crypto");
 const PORT = Number(process.env.PORT || 3001);
 const TICK_RATE = 60;
 const SNAPSHOT_RATE = 20;
-const WORLD = { width: 1440, height: 960 };
+const WORLD = { width: 2880, height: 1920 };
 const PLAYER_RADIUS = 34;
 const COLORS = ["#22c55e", "#38bdf8", "#f97316", "#a855f7", "#facc15", "#fb7185", "#14b8a6", "#e879f9"];
 
@@ -22,6 +22,7 @@ const server = http.createServer((req, res) => {
   if (req.url === "/health") {
     sendJson(res, {
       ok: true,
+      world: WORLD,
       players: players.size,
       enemies: enemies.length,
       teamScore,
@@ -142,8 +143,8 @@ function createOrResetPlayer(id, name) {
     id,
     name,
     color,
-    x: WORLD.width / 2 + random(-160, 160),
-    y: WORLD.height / 2 + random(-120, 120),
+    x: WORLD.width / 2 + random(-260, 260),
+    y: WORLD.height / 2 + random(-200, 200),
     angle: random(-Math.PI, Math.PI),
     radius: PLAYER_RADIUS,
     lives: 3,
@@ -197,8 +198,8 @@ function updatePlayer(player, input = {}) {
     player.respawnTimer -= 1;
     if (player.respawnTimer === 0) {
       player.lives = 3;
-      player.x = WORLD.width / 2 + random(-180, 180);
-      player.y = WORLD.height / 2 + random(-140, 140);
+      player.x = WORLD.width / 2 + random(-280, 280);
+      player.y = WORLD.height / 2 + random(-220, 220);
       player.invulnerable = 120;
     }
     return;
@@ -265,7 +266,7 @@ function getEnemySpawnDelay() {
 }
 
 function spawnEnemy() {
-  if (enemies.length > 90) return;
+  if (enemies.length > 140) return;
 
   const side = Math.floor(random(0, 4));
   const fast = random(0, 1) < 0.26;
@@ -292,7 +293,7 @@ function spawnEnemy() {
 }
 
 function spawnPowerUp() {
-  if (powerUps.length >= 4) return;
+  if (powerUps.length >= 7) return;
   const typeRoll = random(0, 1);
   const type = typeRoll < 0.62 ? "triple" : typeRoll < 0.84 ? "repair" : "shield";
   powerUps.push({

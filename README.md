@@ -8,7 +8,7 @@ Il progetto contiene:
 - una mini libreria didattica canvas, ispirata a p5.js ma inclusa nel progetto;
 - una progressione di script dal ciclo infinito al mini shooter;
 - un finale con canvas 1440x960, controllo a rotazione, bonus arma tripla e bonus riparazione;
-- una arena cooperativa online con nomi, WebSocket e fuoco amico disabilitato;
+- una arena cooperativa online 2880x1920 con camera sul giocatore, nomi, WebSocket e fuoco amico disabilitato;
 - slide Beamer in LaTeX;
 - PDF delle slide servito dal laboratorio web;
 - container Docker con nginx per servire tutto come sito statico;

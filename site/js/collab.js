@@ -7,6 +7,8 @@ const teamScore = document.querySelector("#teamScore");
 const selfStatus = document.querySelector("#selfStatus");
 const playerList = document.querySelector("#playerList");
 
+const VIEWPORT = { width: 1440, height: 960 };
+
 const state = {
   socket: null,
   selfId: null,
@@ -14,7 +16,7 @@ const state = {
   connected: false,
   joined: false,
   snapshot: {
-    world: { width: 1440, height: 960 },
+    world: { width: 2880, height: 1920 },
     teamScore: 0,
     players: [],
     bullets: [],
@@ -141,17 +143,24 @@ function setStatus(value) {
 
 function render() {
   const snapshot = state.snapshot;
-  if (canvas.width !== snapshot.world.width || canvas.height !== snapshot.world.height) {
-    canvas.width = snapshot.world.width;
-    canvas.height = snapshot.world.height;
+  if (canvas.width !== VIEWPORT.width || canvas.height !== VIEWPORT.height) {
+    canvas.width = VIEWPORT.width;
+    canvas.height = VIEWPORT.height;
   }
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const camera = getCamera(snapshot);
+
+  ctx.save();
+  ctx.translate(-camera.x, -camera.y);
   drawBackground(snapshot.world);
   drawPowerUps(snapshot.powerUps);
   drawBullets(snapshot.bullets);
   drawEnemies(snapshot.enemies);
   drawPlayers(snapshot.players);
+  ctx.restore();
+
+  drawMinimap(snapshot, camera);
 
   if (!state.joined) {
     drawCenterText("Arena cooperativa", "inserisci il nome e premi Entra");
@@ -160,6 +169,19 @@ function render() {
   }
 
   requestAnimationFrame(render);
+}
+
+function getCamera(snapshot) {
+  const world = snapshot.world;
+  const focus = snapshot.players.find((player) => player.id === state.selfId) || {
+    x: world.width / 2,
+    y: world.height / 2,
+  };
+
+  return {
+    x: clamp(focus.x - VIEWPORT.width / 2, 0, Math.max(0, world.width - VIEWPORT.width)),
+    y: clamp(focus.y - VIEWPORT.height / 2, 0, Math.max(0, world.height - VIEWPORT.height)),
+  };
 }
 
 function drawBackground(world) {
@@ -174,6 +196,10 @@ function drawBackground(world) {
   for (let y = 0; y <= world.height; y += 80) {
     line(0, y, world.width, y);
   }
+
+  ctx.strokeStyle = "#38bdf8";
+  ctx.lineWidth = 6;
+  ctx.strokeRect(0, 0, world.width, world.height);
 }
 
 function drawPlayers(players) {
@@ -289,6 +315,51 @@ function drawCenterText(title, subtitle) {
   ctx.fillText(subtitle, canvas.width / 2, canvas.height / 2 + 38);
 }
 
+function drawMinimap(snapshot, camera) {
+  const world = snapshot.world;
+  const mapWidth = 220;
+  const mapHeight = 147;
+  const x = canvas.width - mapWidth - 22;
+  const y = 22;
+  const scaleX = mapWidth / world.width;
+  const scaleY = mapHeight / world.height;
+
+  ctx.save();
+  ctx.fillStyle = "rgba(15, 23, 42, 0.78)";
+  ctx.fillRect(x, y, mapWidth, mapHeight);
+  ctx.strokeStyle = "rgba(148, 163, 184, 0.55)";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(x, y, mapWidth, mapHeight);
+
+  ctx.strokeStyle = "#38bdf8";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(
+    x + camera.x * scaleX,
+    y + camera.y * scaleY,
+    VIEWPORT.width * scaleX,
+    VIEWPORT.height * scaleY
+  );
+
+  for (const player of snapshot.players) {
+    ctx.fillStyle = player.id === state.selfId ? "#facc15" : player.color;
+    ctx.beginPath();
+    ctx.arc(x + player.x * scaleX, y + player.y * scaleY, 4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  ctx.fillStyle = "#ef4444";
+  for (const enemy of snapshot.enemies) {
+    ctx.fillRect(x + enemy.x * scaleX - 1, y + enemy.y * scaleY - 1, 2, 2);
+  }
+
+  ctx.fillStyle = "#38bdf8";
+  for (const powerUp of snapshot.powerUps) {
+    ctx.fillRect(x + powerUp.x * scaleX - 2, y + powerUp.y * scaleY - 2, 4, 4);
+  }
+
+  ctx.restore();
+}
+
 function line(x1, y1, x2, y2) {
   ctx.beginPath();
   ctx.moveTo(x1, y1);
@@ -309,4 +380,8 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
 }

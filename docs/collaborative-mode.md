@@ -9,6 +9,7 @@ La pagina `site/collab.html` permette a piu' persone di entrare nella stessa bat
 - Il client invia solo input: rotazione, avanti, indietro.
 - Il server simula posizione, spari, nemici, collisioni, bonus e punteggio.
 - I proiettili colpiscono solo i nemici, non gli altri giocatori.
+- Il mondo condiviso e' grande `2880x1920`; ogni browser mostra una camera `1440x960` centrata sul proprio giocatore, con minimappa.
 
 ## Servizi Docker
 
@@ -40,4 +41,3 @@ docker compose -f docker-compose.yml -f docker-compose.https.yml up -d
 ```
 
 Se modifichi solo file dentro `site/`, il refresh del browser basta. Se modifichi `server/collab-server.js`, riavvia `collab`.
-
