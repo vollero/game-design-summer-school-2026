@@ -8,7 +8,7 @@ Il progetto contiene:
 - una mini libreria didattica canvas, ispirata a p5.js ma inclusa nel progetto;
 - una progressione di script dal ciclo infinito al mini shooter;
 - un finale con canvas 1440x960, controllo a rotazione, bonus arma tripla e bonus riparazione;
-- una arena cooperativa online 2880x1920 con camera sul giocatore, nomi, WebSocket e fuoco amico disabilitato;
+- una arena cooperativa online 5760x3840 con camera 2880x1920 sul giocatore, nomi, WebSocket, controllo touch e fuoco amico disabilitato;
 - slide Beamer in LaTeX;
 - PDF delle slide servito dal laboratorio web;
 - container Docker con nginx per servire tutto come sito statico;
@@ -32,7 +32,7 @@ Arena cooperativa:
 http://localhost:8080/collab.html
 ```
 
-La directory del progetto e' montata come volume dentro nginx. Se modifichi HTML, CSS, JS, lezioni o documenti, il cambiamento e' visibile al refresh del browser senza ricostruire l'immagine. Il servizio `collab` gestisce la partita condivisa via WebSocket.
+La directory del progetto e' montata come volume dentro nginx. Se modifichi HTML, CSS, JS, lezioni o documenti, il cambiamento e' visibile al refresh del browser senza ricostruire l'immagine. Il servizio `collab` gestisce la partita condivisa via WebSocket: se modifichi `server/collab-server.js`, ricrea il container.
 
 ## Struttura
 

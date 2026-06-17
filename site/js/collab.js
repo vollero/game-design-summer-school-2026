@@ -7,7 +7,7 @@ const teamScore = document.querySelector("#teamScore");
 const selfStatus = document.querySelector("#selfStatus");
 const playerList = document.querySelector("#playerList");
 
-const VIEWPORT = { width: 1440, height: 960 };
+const VIEWPORT = { width: 2880, height: 1920 };
 
 const state = {
   socket: null,
@@ -16,7 +16,7 @@ const state = {
   connected: false,
   joined: false,
   snapshot: {
-    world: { width: 2880, height: 1920 },
+    world: { width: 5760, height: 3840 },
     teamScore: 0,
     players: [],
     bullets: [],
@@ -28,6 +28,13 @@ const state = {
     right: false,
     forward: false,
     back: false,
+    touchActive: false,
+    touchAngle: null,
+  },
+  touch: {
+    pointerId: null,
+    x: 0,
+    y: 0,
   },
 };
 
@@ -46,6 +53,11 @@ joinForm.addEventListener("submit", (event) => {
 
 window.addEventListener("keydown", (event) => updateInput(event, true));
 window.addEventListener("keyup", (event) => updateInput(event, false));
+canvas.addEventListener("pointerdown", startTouchDirection);
+canvas.addEventListener("pointermove", updateTouchDirection);
+canvas.addEventListener("pointerup", stopTouchDirection);
+canvas.addEventListener("pointercancel", stopTouchDirection);
+canvas.addEventListener("pointerleave", stopTouchDirection);
 
 function connect() {
   const protocol = location.protocol === "https:" ? "wss:" : "ws:";
@@ -109,6 +121,56 @@ function updateInput(event, pressed) {
   }
 }
 
+function startTouchDirection(event) {
+  if (!state.joined) return;
+  canvas.setPointerCapture?.(event.pointerId);
+  state.touch.pointerId = event.pointerId;
+  applyTouchDirection(event);
+}
+
+function updateTouchDirection(event) {
+  if (state.touch.pointerId !== event.pointerId) return;
+  applyTouchDirection(event);
+}
+
+function stopTouchDirection(event) {
+  if (state.touch.pointerId !== event.pointerId) return;
+  canvas.releasePointerCapture?.(event.pointerId);
+  state.touch.pointerId = null;
+  state.input.touchActive = false;
+  state.input.touchAngle = null;
+  sendInput();
+}
+
+function applyTouchDirection(event) {
+  const self = getSelfPlayer(state.snapshot);
+  if (!self) return;
+
+  const camera = getCamera(state.snapshot);
+  const pointer = getCanvasPointer(event);
+  const selfX = self.x - camera.x;
+  const selfY = self.y - camera.y;
+  const dx = pointer.x - selfX;
+  const dy = pointer.y - selfY;
+
+  if (Math.hypot(dx, dy) < 12) return;
+
+  event.preventDefault();
+  state.touch.x = pointer.x;
+  state.touch.y = pointer.y;
+  state.input.touchActive = true;
+  state.input.touchAngle = Math.atan2(dy, dx);
+  sendInput();
+}
+
+function getCanvasPointer(event) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: ((event.clientX - rect.left) / rect.width) * canvas.width,
+    y: ((event.clientY - rect.top) / rect.height) * canvas.height,
+  };
+}
+
 function isTextInputEvent(event) {
   const target = event.target;
   if (!target) return false;
@@ -124,7 +186,7 @@ function sendInput() {
 
 function updateHud() {
   teamScore.textContent = `score ${state.snapshot.teamScore}`;
-  const self = state.snapshot.players.find((player) => player.id === state.selfId);
+  const self = getSelfPlayer(state.snapshot);
   if (self) {
     const weapon = self.weapon === "triple" ? `triplo ${Math.ceil(self.weaponTimer / 60)}s` : "singola";
     const respawn = self.respawnTimer > 0 ? ` rientro ${Math.ceil(self.respawnTimer / 60)}s` : "";
@@ -171,6 +233,7 @@ function render() {
   ctx.restore();
 
   drawMinimap(snapshot, camera);
+  drawTouchDirection(snapshot, camera);
 
   if (!state.joined) {
     drawCenterText("Arena cooperativa", "inserisci il nome e premi Entra");
@@ -183,7 +246,7 @@ function render() {
 
 function getCamera(snapshot) {
   const world = snapshot.world;
-  const focus = snapshot.players.find((player) => player.id === state.selfId) || {
+  const focus = getSelfPlayer(snapshot) || {
     x: world.width / 2,
     y: world.height / 2,
   };
@@ -192,6 +255,10 @@ function getCamera(snapshot) {
     x: clamp(focus.x - VIEWPORT.width / 2, 0, Math.max(0, world.width - VIEWPORT.width)),
     y: clamp(focus.y - VIEWPORT.height / 2, 0, Math.max(0, world.height - VIEWPORT.height)),
   };
+}
+
+function getSelfPlayer(snapshot) {
+  return snapshot.players.find((player) => player.id === state.selfId);
 }
 
 function drawBackground(world) {
@@ -367,6 +434,29 @@ function drawMinimap(snapshot, camera) {
     ctx.fillRect(x + powerUp.x * scaleX - 2, y + powerUp.y * scaleY - 2, 4, 4);
   }
 
+  ctx.restore();
+}
+
+function drawTouchDirection(snapshot, camera) {
+  if (!state.input.touchActive) return;
+  const self = getSelfPlayer(snapshot);
+  if (!self) return;
+
+  const x = self.x - camera.x;
+  const y = self.y - camera.y;
+  const endX = x + Math.cos(state.input.touchAngle) * 132;
+  const endY = y + Math.sin(state.input.touchAngle) * 132;
+
+  ctx.save();
+  ctx.strokeStyle = "rgba(250, 204, 21, 0.82)";
+  ctx.fillStyle = "rgba(250, 204, 21, 0.18)";
+  ctx.lineWidth = 7;
+  ctx.lineCap = "round";
+  line(x, y, endX, endY);
+  ctx.beginPath();
+  ctx.arc(endX, endY, 24, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
   ctx.restore();
 }
 

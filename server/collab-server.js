@@ -4,8 +4,14 @@ const crypto = require("crypto");
 const PORT = Number(process.env.PORT || 3001);
 const TICK_RATE = 60;
 const SNAPSHOT_RATE = 20;
-const WORLD = { width: 2880, height: 1920 };
+const WORLD = { width: 5760, height: 3840 };
+const VIEWPORT = { width: 2880, height: 1920 };
 const PLAYER_RADIUS = 34;
+const PLAYER_KEYBOARD_FORWARD_SPEED = 7.6;
+const PLAYER_KEYBOARD_BACK_SPEED = 4.3;
+const ENEMY_SCORE_SPEED_SCALE = 0.0012;
+const ENEMY_FAST_MAX_BASE_SPEED = 5.3;
+const TOUCH_SPEED_MULTIPLIER = 1.05;
 const COLORS = ["#22c55e", "#38bdf8", "#f97316", "#a855f7", "#facc15", "#fb7185", "#14b8a6", "#e879f9"];
 
 const clients = new Map();
@@ -78,7 +84,7 @@ function createClient(socket) {
     socket,
     buffer: Buffer.alloc(0),
     joined: false,
-    input: { left: false, right: false, forward: false, back: false },
+    input: createEmptyInput(),
     lastSeen: Date.now(),
   };
 
@@ -133,6 +139,8 @@ function handleMessage(client, rawMessage) {
       right: Boolean(message.input?.right),
       forward: Boolean(message.input?.forward),
       back: Boolean(message.input?.back),
+      touchActive: Boolean(message.input?.touchActive),
+      touchAngle: sanitizeAngle(message.input?.touchAngle),
     };
   }
 }
@@ -205,20 +213,29 @@ function updatePlayer(player, input = {}) {
     return;
   }
 
-  if (input.left) player.angle -= 0.07;
-  if (input.right) player.angle += 0.07;
+  if (input.touchActive && Number.isFinite(input.touchAngle)) {
+    player.angle = input.touchAngle;
+    const dirX = Math.cos(player.angle);
+    const dirY = Math.sin(player.angle);
+    const speed = getTouchMoveSpeed();
+    player.x += dirX * speed;
+    player.y += dirY * speed;
+  } else {
+    if (input.left) player.angle -= 0.07;
+    if (input.right) player.angle += 0.07;
 
-  const dirX = Math.cos(player.angle);
-  const dirY = Math.sin(player.angle);
+    const dirX = Math.cos(player.angle);
+    const dirY = Math.sin(player.angle);
 
-  if (input.forward) {
-    player.x += dirX * 7.6;
-    player.y += dirY * 7.6;
-  }
+    if (input.forward) {
+      player.x += dirX * PLAYER_KEYBOARD_FORWARD_SPEED;
+      player.y += dirY * PLAYER_KEYBOARD_FORWARD_SPEED;
+    }
 
-  if (input.back) {
-    player.x -= dirX * 4.3;
-    player.y -= dirY * 4.3;
+    if (input.back) {
+      player.x -= dirX * PLAYER_KEYBOARD_BACK_SPEED;
+      player.y -= dirY * PLAYER_KEYBOARD_BACK_SPEED;
+    }
   }
 
   player.x = clamp(player.x, player.radius, WORLD.width - player.radius);
@@ -265,9 +282,19 @@ function getEnemySpawnDelay() {
   return Math.max(12, base - Math.max(0, activePlayers - 1) * 4);
 }
 
-function spawnEnemy() {
-  if (enemies.length > 140) return;
+function getTouchMoveSpeed() {
+  const fastestCurrentEnemy = enemies.reduce((max, enemy) => Math.max(max, enemy.speed), 0);
+  const fastestExpectedEnemy = ENEMY_FAST_MAX_BASE_SPEED + teamScore * ENEMY_SCORE_SPEED_SCALE;
+  return Math.max(fastestCurrentEnemy, fastestExpectedEnemy) * TOUCH_SPEED_MULTIPLIER;
+}
 
+function spawnEnemy() {
+  if (enemies.length > 220) return;
+
+  const activePlayers = [...players.values()].filter((player) => player.respawnTimer <= 0);
+  const anchor = activePlayers.length > 0
+    ? activePlayers[Math.floor(random(0, activePlayers.length))]
+    : { x: WORLD.width / 2, y: WORLD.height / 2 };
   const side = Math.floor(random(0, 4));
   const fast = random(0, 1) < 0.26;
   const tank = !fast && random(0, 1) < 0.18;
@@ -276,30 +303,55 @@ function spawnEnemy() {
     x: 0,
     y: 0,
     radius: tank ? random(52, 66) : fast ? random(22, 30) : random(32, 46),
-    speed: tank ? random(1.4, 2.0) : fast ? random(4.0, 5.3) : random(2.2, 3.4),
+    speed: tank ? random(1.4, 2.0) : fast ? random(4.0, ENEMY_FAST_MAX_BASE_SPEED) : random(2.2, 3.4),
     hp: tank ? 3 : 1,
     type: tank ? "tank" : fast ? "fast" : "grunt",
     scoreValue: tank ? 35 : fast ? 15 : 10,
   };
 
-  enemy.speed += teamScore * 0.0012;
+  enemy.speed += teamScore * ENEMY_SCORE_SPEED_SCALE;
 
-  if (side === 0) { enemy.x = random(0, WORLD.width); enemy.y = -enemy.radius; }
-  if (side === 1) { enemy.x = WORLD.width + enemy.radius; enemy.y = random(0, WORLD.height); }
-  if (side === 2) { enemy.x = random(0, WORLD.width); enemy.y = WORLD.height + enemy.radius; }
-  if (side === 3) { enemy.x = -enemy.radius; enemy.y = random(0, WORLD.height); }
+  const margin = 180;
+  const left = anchor.x - VIEWPORT.width / 2;
+  const right = anchor.x + VIEWPORT.width / 2;
+  const top = anchor.y - VIEWPORT.height / 2;
+  const bottom = anchor.y + VIEWPORT.height / 2;
+
+  if (side === 0) {
+    enemy.x = random(left, right);
+    enemy.y = top - margin;
+  }
+  if (side === 1) {
+    enemy.x = right + margin;
+    enemy.y = random(top, bottom);
+  }
+  if (side === 2) {
+    enemy.x = random(left, right);
+    enemy.y = bottom + margin;
+  }
+  if (side === 3) {
+    enemy.x = left - margin;
+    enemy.y = random(top, bottom);
+  }
+
+  enemy.x = clamp(enemy.x, -enemy.radius, WORLD.width + enemy.radius);
+  enemy.y = clamp(enemy.y, -enemy.radius, WORLD.height + enemy.radius);
 
   enemies.push(enemy);
 }
 
 function spawnPowerUp() {
-  if (powerUps.length >= 7) return;
+  if (powerUps.length >= 12) return;
+  const activePlayers = [...players.values()].filter((player) => player.respawnTimer <= 0);
+  const anchor = activePlayers.length > 0
+    ? activePlayers[Math.floor(random(0, activePlayers.length))]
+    : { x: WORLD.width / 2, y: WORLD.height / 2 };
   const typeRoll = random(0, 1);
   const type = typeRoll < 0.62 ? "triple" : typeRoll < 0.84 ? "repair" : "shield";
   powerUps.push({
     id: `u${nextId++}`,
-    x: random(120, WORLD.width - 120),
-    y: random(120, WORLD.height - 120),
+    x: clamp(anchor.x + random(-VIEWPORT.width * 0.42, VIEWPORT.width * 0.42), 120, WORLD.width - 120),
+    y: clamp(anchor.y + random(-VIEWPORT.height * 0.42, VIEWPORT.height * 0.42), 120, WORLD.height - 120),
     radius: 28,
     type,
     life: 900,
@@ -572,6 +624,23 @@ function sanitizeName(name) {
     .replace(/[^\p{L}\p{N} _.-]/gu, "")
     .trim()
     .slice(0, 18) || "Player";
+}
+
+function sanitizeAngle(value) {
+  const angle = Number(value);
+  if (!Number.isFinite(angle)) return null;
+  return Math.atan2(Math.sin(angle), Math.cos(angle));
+}
+
+function createEmptyInput() {
+  return {
+    left: false,
+    right: false,
+    forward: false,
+    back: false,
+    touchActive: false,
+    touchAngle: null,
+  };
 }
 
 function hashCode(value) {
