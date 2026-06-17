@@ -92,6 +92,8 @@ function join() {
 }
 
 function updateInput(event, pressed) {
+  if (isTextInputEvent(event)) return;
+
   const key = event.key.toLowerCase();
   let handled = true;
 
@@ -105,6 +107,14 @@ function updateInput(event, pressed) {
     event.preventDefault();
     sendInput();
   }
+}
+
+function isTextInputEvent(event) {
+  const target = event.target;
+  if (!target) return false;
+
+  const tagName = target.tagName;
+  return target.isContentEditable || tagName === "INPUT" || tagName === "TEXTAREA" || tagName === "SELECT";
 }
 
 function sendInput() {
