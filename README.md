@@ -58,6 +58,14 @@ git push -u origin main
 
 Sul server remoto puoi clonare lo stesso repository e avviare `docker compose up -d`.
 
+Per HTTPS con DuckDNS usa l'override Caddy:
+
+```bash
+cp .env.example .env
+# modifica PUBLIC_DOMAIN dentro .env
+docker compose -f docker-compose.yml -f docker-compose.https.yml up -d
+```
+
 ## Slide
 
 Per compilare le slide:

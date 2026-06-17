@@ -28,7 +28,7 @@ cp .env.example .env
 docker compose up -d
 ```
 
-Se vuoi servire direttamente sulla porta 80, modifica `.env`:
+Se vuoi servire solo HTTP direttamente sulla porta 80, modifica `.env`:
 
 ```bash
 WEB_PORT=80
@@ -40,7 +40,39 @@ Poi:
 docker compose up -d
 ```
 
-## 3. Aggiornare il server da GitHub
+## 3. HTTPS con DuckDNS e Caddy
+
+Se il server remoto puo' usare HTTPS, usa Caddy come reverse proxy davanti a nginx. Caddy ottiene e rinnova automaticamente i certificati Let's Encrypt.
+
+Nel file `.env` imposta il dominio DuckDNS:
+
+```bash
+PUBLIC_DOMAIN=miocorso.duckdns.org
+HTTP_PORT=80
+HTTPS_PORT=443
+```
+
+Poi avvia con entrambi i file Compose:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.https.yml up -d
+```
+
+Verifica:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.https.yml ps
+```
+
+L'indirizzo pubblico sara':
+
+```text
+https://miocorso.duckdns.org
+```
+
+Nota: la porta 80 deve essere raggiungibile dall'esterno almeno durante il rilascio/rinnovo del certificato Let's Encrypt.
+
+## 4. Aggiornare il server da GitHub
 
 Ogni volta che modifichi il materiale e fai push:
 
@@ -50,13 +82,19 @@ git pull --ff-only
 docker compose up -d
 ```
 
+Se usi HTTPS:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.https.yml up -d
+```
+
 Oppure usa lo script incluso:
 
 ```bash
 ./scripts/server-pull-and-restart.sh /srv/game-design-summer-school-2026
 ```
 
-## 4. Modifiche live tramite volume
+## 5. Modifiche live tramite volume
 
 Il compose monta l'intero progetto in sola lettura:
 
@@ -72,7 +110,7 @@ Per modifiche a `docker-compose.yml`, `.env` o `nginx/default.conf`, riavvia:
 docker compose up -d --force-recreate
 ```
 
-## 5. DuckDNS
+## 6. DuckDNS
 
 Su DuckDNS crea un dominio, per esempio:
 
@@ -98,12 +136,19 @@ Aggiungi una riga come questa, sostituendo dominio e token:
 */5 * * * * /srv/game-design-summer-school-2026/scripts/update-duckdns.sh miocorso TOKEN_DUCKDNS >/tmp/duckdns.log 2>&1
 ```
 
-## 6. Firewall
+## 7. Firewall
 
 Se usi la porta 80:
 
 ```bash
 sudo ufw allow 80/tcp
+```
+
+Se usi HTTPS:
+
+```bash
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
 ```
 
 Se usi la porta 8080:
@@ -112,9 +157,15 @@ Se usi la porta 8080:
 sudo ufw allow 8080/tcp
 ```
 
-## 7. Accesso dal browser
+## 8. Accesso dal browser
 
-Con porta 80:
+Con HTTPS:
+
+```text
+https://miocorso.duckdns.org
+```
+
+Con porta 80 HTTP:
 
 ```text
 http://miocorso.duckdns.org
@@ -126,6 +177,9 @@ Con porta 8080:
 http://miocorso.duckdns.org:8080
 ```
 
-## 8. HTTPS opzionale
+## 9. Log utili
 
-Per una lezione puo' bastare HTTP. Se vuoi HTTPS, la scelta piu' semplice e' mettere davanti un reverse proxy come Caddy o nginx con Let's Encrypt e lasciare questo compose sulla porta 8080 locale.
+```bash
+docker compose logs -f web
+docker compose -f docker-compose.yml -f docker-compose.https.yml logs -f caddy
+```
