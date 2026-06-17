@@ -1,0 +1,143 @@
+[
+  {
+    "id": "loop-console",
+    "file": "01-loop-console.js",
+    "title": "Un ciclo che non finisce",
+    "short": "tempo e ripetizione",
+    "goal": "Il primo passo e' vedere che un programma puo' fare qualcosa tante volte, senza essere rilanciato a mano."
+  },
+  {
+    "id": "canvas-first-shape",
+    "file": "02-canvas-first-shape.js",
+    "title": "Uno schermo per disegnare",
+    "short": "canvas e coordinate",
+    "goal": "Creiamo una superficie di gioco e disegniamo un personaggio come forma semplice."
+  },
+  {
+    "id": "draw-loop",
+    "file": "03-draw-loop.js",
+    "title": "Il game loop",
+    "short": "draw ripetuto",
+    "goal": "La funzione draw viene richiamata molte volte al secondo: e' il cuore di quasi tutti i giochi."
+  },
+  {
+    "id": "position-variables",
+    "file": "04-position-variables.js",
+    "title": "La posizione e' una variabile",
+    "short": "x, y, dimensione",
+    "goal": "Spostiamo i numeri dentro variabili, cosi il codice diventa modificabile e leggibile."
+  },
+  {
+    "id": "velocity",
+    "file": "05-velocity.js",
+    "title": "Aggiungere velocita'",
+    "short": "x = x + velocita",
+    "goal": "Per animare un oggetto basta cambiare la sua posizione a ogni giro del game loop."
+  },
+  {
+    "id": "bounce",
+    "file": "06-bounce.js",
+    "title": "Rimbalzare sui bordi",
+    "short": "if e inversione",
+    "goal": "Introduciamo una regola: se tocchi un bordo, inverti la velocita'."
+  },
+  {
+    "id": "player-object",
+    "file": "07-player-object.js",
+    "title": "Un oggetto giocatore",
+    "short": "stato raggruppato",
+    "goal": "Mettiamo le proprieta' del giocatore dentro un oggetto JavaScript."
+  },
+  {
+    "id": "keyboard-x",
+    "file": "08-keyboard-x.js",
+    "title": "Muoversi a sinistra e destra",
+    "short": "tastiera orizzontale",
+    "goal": "Colleghiamo i tasti alla posizione del giocatore."
+  },
+  {
+    "id": "keyboard-xy",
+    "file": "09-keyboard-xy.js",
+    "title": "Muoversi in quattro direzioni",
+    "short": "WASD e frecce",
+    "goal": "Aggiungiamo il movimento verticale e otteniamo il primo controllo completo."
+  },
+  {
+    "id": "bounds",
+    "file": "10-bounds.js",
+    "title": "Restare nello schermo",
+    "short": "constrain",
+    "goal": "Il personaggio non deve uscire dall'area di gioco."
+  },
+  {
+    "id": "direction",
+    "file": "11-direction.js",
+    "title": "Guardare nella direzione giusta",
+    "short": "direzione e mira",
+    "goal": "Memorizziamo l'ultima direzione di movimento per sapere dove sparare."
+  },
+  {
+    "id": "single-bullet",
+    "file": "12-single-bullet.js",
+    "title": "Il primo proiettile",
+    "short": "oggetto proiettile",
+    "goal": "Creiamo un proiettile automatico usando posizione, direzione e velocita'."
+  },
+  {
+    "id": "bullet-array",
+    "file": "13-bullet-array.js",
+    "title": "Tanti proiettili",
+    "short": "array",
+    "goal": "Usiamo una lista per gestire molti proiettili contemporaneamente."
+  },
+  {
+    "id": "spawn-enemies",
+    "file": "14-spawn-enemies.js",
+    "title": "Nemici che appaiono",
+    "short": "spawn periodico",
+    "goal": "Aggiungiamo nemici che nascono dai bordi dello schermo."
+  },
+  {
+    "id": "enemy-chase",
+    "file": "15-enemy-chase.js",
+    "title": "Nemici che inseguono",
+    "short": "vettore verso il player",
+    "goal": "Ogni nemico calcola la direzione verso il giocatore e si muove."
+  },
+  {
+    "id": "bullet-collision",
+    "file": "16-bullet-collision.js",
+    "title": "Colpire un nemico",
+    "short": "collisioni",
+    "goal": "Quando un proiettile tocca un nemico, entrambi spariscono."
+  },
+  {
+    "id": "player-damage",
+    "file": "17-player-damage.js",
+    "title": "Il giocatore puo' perdere",
+    "short": "vite e invulnerabilita'",
+    "goal": "Aggiungiamo vite e un piccolo tempo di protezione dopo un colpo."
+  },
+  {
+    "id": "score-ui",
+    "file": "18-score-ui.js",
+    "title": "Punteggio e stato partita",
+    "short": "interfaccia di gioco",
+    "goal": "Mostriamo punteggio, vite e messaggi direttamente nel canvas."
+  },
+  {
+    "id": "feedback",
+    "file": "19-feedback.js",
+    "title": "Feedback visivo",
+    "short": "particelle",
+    "goal": "Piccole esplosioni e colori aiutano il giocatore a capire cosa sta succedendo."
+  },
+  {
+    "id": "final-shooter",
+    "file": "20-final-shooter.js",
+    "title": "Mini shooter completo",
+    "short": "tutto insieme",
+    "goal": "Un piccolo gioco completo: movimento, sparo automatico, nemici, collisioni, punteggio e restart."
+  }
+]
+

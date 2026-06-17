@@ -1,0 +1,88 @@
+# Game Design Summer School 2026
+
+Materiale per una lezione/laboratorio di programmazione di videogiochi per ragazzi delle scuole medie.
+
+Il progetto contiene:
+
+- un laboratorio web interattivo con esempi JavaScript granulari;
+- una mini libreria didattica canvas, ispirata a p5.js ma inclusa nel progetto;
+- una progressione di script dal ciclo infinito al mini shooter;
+- slide Beamer in LaTeX;
+- PDF delle slide servito dal laboratorio web;
+- container Docker con nginx per servire tutto come sito statico;
+- script e documentazione per sincronizzare il materiale su un server remoto.
+
+## Avvio locale
+
+```bash
+docker compose up -d
+```
+
+Poi apri:
+
+```text
+http://localhost:8080
+```
+
+La directory `site/` e' montata come volume dentro nginx. Se modifichi HTML, CSS, JS o lezioni, il cambiamento e' visibile al refresh del browser senza ricostruire l'immagine.
+
+## Struttura
+
+```text
+site/
+  index.html              laboratorio web
+  css/styles.css          stile dell'interfaccia
+  js/app.js               shell del laboratorio
+  js/edu-game.js          mini engine canvas didattico
+  lessons/*.js            progressione degli esempi
+slides/
+  lezione-game-loop.tex   presentazione Beamer
+nginx/
+  default.conf            configurazione nginx
+docs/
+  remote-server.md        deploy su server Unix e DuckDNS
+scripts/
+  sync-remote.sh          sincronizzazione via rsync
+  restart-remote.sh       riavvio compose sul server
+```
+
+## Collegamento a GitHub
+
+Crea un repository vuoto su GitHub, poi collega questa cartella:
+
+```bash
+git remote add origin git@github.com:TUO-UTENTE/game-design-summer-school-2026.git
+git branch -M main
+git push -u origin main
+```
+
+Sul server remoto puoi clonare lo stesso repository e avviare `docker compose up -d`.
+
+## Slide
+
+Per compilare le slide:
+
+```bash
+cd slides
+latexmk -pdf lezione-game-loop.tex
+```
+
+In alternativa:
+
+```bash
+pdflatex lezione-game-loop.tex
+pdflatex lezione-game-loop.tex
+```
+
+## Uso in aula
+
+Il percorso consigliato e':
+
+1. partire dal ciclo che stampa messaggi;
+2. passare al canvas e al game loop;
+3. introdurre variabili, posizione, velocita';
+4. collegare la tastiera allo stato del gioco;
+5. introdurre liste di oggetti con proiettili e nemici;
+6. chiudere con collisioni, punteggio e game over.
+
+Ogni step nel laboratorio e' modificabile. Gli studenti possono cambiare numeri, colori e regole e premere `Esegui`.

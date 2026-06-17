@@ -1,0 +1,287 @@
+:root {
+  --ink: #111827;
+  --paper: #f7f4ef;
+  --panel: #ffffff;
+  --line: #d8d2c5;
+  --muted: #64748b;
+  --blue: #2563eb;
+  --green: #059669;
+  --red: #dc2626;
+  --yellow: #f59e0b;
+  --violet: #7c3aed;
+  --code: #101624;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  background:
+    linear-gradient(90deg, rgba(37, 99, 235, 0.08), transparent 32%),
+    linear-gradient(180deg, #fbfaf7 0%, var(--paper) 100%);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  min-height: 40px;
+  padding: 0 14px;
+}
+
+button:hover {
+  border-color: var(--blue);
+}
+
+.lab-shell {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.lesson-panel {
+  border-right: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(10px);
+  padding: 22px;
+  overflow-y: auto;
+}
+
+.brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, var(--blue) 0 45%, transparent 45%),
+    linear-gradient(45deg, var(--green) 0 48%, var(--yellow) 48% 72%, var(--red) 72%);
+  box-shadow: 0 8px 22px rgba(17, 24, 39, 0.16);
+  flex: 0 0 auto;
+}
+
+.brand h1 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.brand p {
+  color: var(--muted);
+  margin: 2px 0 0;
+  font-size: 0.88rem;
+}
+
+.lesson-list {
+  display: grid;
+  gap: 8px;
+}
+
+.lesson-button {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  border-color: transparent;
+  text-align: left;
+  padding: 10px;
+}
+
+.lesson-button span:first-child {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #edf2ff;
+  color: var(--blue);
+  font-weight: 800;
+}
+
+.lesson-button strong {
+  display: block;
+  font-size: 0.92rem;
+  overflow-wrap: anywhere;
+}
+
+.lesson-button small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.78rem;
+  margin-top: 2px;
+}
+
+.lesson-button.active {
+  border-color: var(--blue);
+  background: #eef5ff;
+}
+
+.resource-links {
+  display: grid;
+  gap: 8px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.resource-links a {
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  color: var(--ink);
+  font-weight: 800;
+  padding: 10px 12px;
+  text-decoration: none;
+}
+
+.resource-links a:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.workspace {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-width: 0;
+}
+
+.lesson-header {
+  display: flex;
+  gap: 18px;
+  justify-content: space-between;
+  align-items: end;
+  padding: 22px 26px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: var(--violet);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.lesson-header h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 2vw, 2rem);
+}
+
+.goal {
+  max-width: 780px;
+  color: var(--muted);
+  margin: 8px 0 0;
+  line-height: 1.45;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+#runButton {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: white;
+}
+
+.activity {
+  display: grid;
+  grid-template-columns: minmax(360px, 0.95fr) minmax(360px, 1.05fr);
+  gap: 0;
+  min-height: 0;
+}
+
+.editor-pane,
+.preview-pane {
+  min-width: 0;
+  min-height: 0;
+}
+
+.editor-pane {
+  border-right: 1px solid var(--line);
+  background: var(--code);
+}
+
+#codeEditor {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  resize: none;
+  border: 0;
+  outline: 0;
+  padding: 20px;
+  background: var(--code);
+  color: #e5e7eb;
+  font: 15px/1.55 "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+  tab-size: 2;
+}
+
+.preview-pane {
+  background: #172033;
+}
+
+#previewFrame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  border: 0;
+  background: #172033;
+}
+
+@media (max-width: 980px) {
+  .lab-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .lesson-panel {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    max-height: 300px;
+  }
+
+  .activity {
+    grid-template-columns: 1fr;
+  }
+
+  .editor-pane {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 640px) {
+  .lesson-header {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 18px;
+  }
+
+  .actions {
+    justify-content: stretch;
+  }
+
+  .actions button {
+    flex: 1 1 120px;
+  }
+}

@@ -1,0 +1,17 @@
+.env
+.git-data/
+.DS_Store
+node_modules/
+dist/
+build/
+*.log
+*.aux
+*.fdb_latexmk
+*.fls
+*.nav
+*.out
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
+slides/*.pdf

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Game Loop Lab</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <main class="lab-shell">
+      <aside class="lesson-panel" aria-label="Lezioni">
+        <div class="brand">
+          <span class="brand-mark"></span>
+          <div>
+            <h1>Game Loop Lab</h1>
+            <p>Dal ciclo al mini shooter</p>
+          </div>
+        </div>
+        <nav id="lessonList" class="lesson-list"></nav>
+        <div class="resource-links">
+          <a href="./assets/lezione-game-loop.pdf" target="_blank" rel="noreferrer">Slide PDF</a>
+          <a href="./docs/lesson-plan.md" target="_blank" rel="noreferrer">Traccia docente</a>
+        </div>
+      </aside>
+
+      <section class="workspace">
+        <header class="lesson-header">
+          <div>
+            <p id="lessonStep" class="eyebrow">Step 01</p>
+            <h2 id="lessonTitle">Caricamento...</h2>
+            <p id="lessonGoal" class="goal"></p>
+          </div>
+          <div class="actions">
+            <button id="runButton" type="button">Esegui</button>
+            <button id="resetButton" type="button">Ripristina</button>
+            <button id="copyButton" type="button">Copia</button>
+          </div>
+        </header>
+
+        <div class="activity">
+          <section class="editor-pane" aria-label="Editor codice">
+            <textarea id="codeEditor" spellcheck="false" aria-label="Codice JavaScript"></textarea>
+          </section>
+          <section class="preview-pane" aria-label="Anteprima">
+            <iframe id="previewFrame" title="Anteprima del gioco" sandbox="allow-scripts"></iframe>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script src="./js/app.js"></script>
+  </body>
+</html>
