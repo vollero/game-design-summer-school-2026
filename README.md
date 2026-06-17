@@ -56,6 +56,7 @@ docs/
 scripts/
   sync-remote.sh          sincronizzazione via rsync
   restart-remote.sh       riavvio compose sul server
+  server-pull-and-restart-https.sh
 ```
 
 ## Collegamento a GitHub

@@ -88,10 +88,22 @@ Se usi HTTPS:
 docker compose -f docker-compose.yml -f docker-compose.https.yml up -d
 ```
 
+Se hai aggiornato nginx, Caddy o la modalita' cooperativa, forza la ricreazione dei container:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.https.yml up -d --force-recreate
+```
+
 Oppure usa lo script incluso:
 
 ```bash
 ./scripts/server-pull-and-restart.sh /srv/game-design-summer-school-2026
+```
+
+Per il deploy HTTPS usa invece:
+
+```bash
+./scripts/server-pull-and-restart-https.sh /srv/game-design-summer-school-2026
 ```
 
 ## 5. Modifiche live tramite volume
