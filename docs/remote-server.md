@@ -88,7 +88,7 @@ Se usi HTTPS:
 docker compose -f docker-compose.yml -f docker-compose.https.yml up -d
 ```
 
-Se hai aggiornato nginx, Caddy o la modalita' cooperativa, forza la ricreazione dei container:
+Se hai aggiornato nginx, Caddy o una modalita' multiplayer, forza la ricreazione dei container:
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.https.yml up -d --force-recreate
@@ -114,9 +114,9 @@ Il compose monta l'intero progetto in sola lettura:
 .:/srv/materiale:ro
 ```
 
-nginx usa `site/` come root web, serve anche `docs/` e inoltra `/ws` al servizio `collab`, che mantiene lo stato condiviso dell'arena cooperativa. Quindi, se lavori direttamente nella cartella clonata sul server, ogni modifica dentro `site/` o `docs/` e' visibile al refresh del browser. Non serve ricostruire il container.
+nginx usa `site/` come root web, serve anche `docs/`, inoltra `/ws` al servizio `collab` e inoltra `/arenaPVP-ws` al servizio `pvp`. Quindi, se lavori direttamente nella cartella clonata sul server, ogni modifica dentro `site/` o `docs/` e' visibile al refresh del browser. Non serve ricostruire il container.
 
-Per modifiche a `docker-compose.yml`, `.env`, `nginx/default.conf` o `server/collab-server.js`, riavvia:
+Per modifiche a `docker-compose.yml`, `.env`, `nginx/default.conf`, `server/collab-server.js` o `server/pvp-server.js`, riavvia:
 
 ```bash
 docker compose up -d --force-recreate
@@ -183,6 +183,12 @@ Arena cooperativa:
 https://miocorso.duckdns.org/collab.html
 ```
 
+arenaPVP:
+
+```text
+https://miocorso.duckdns.org/arenaPVP.html
+```
+
 Con porta 80 HTTP:
 
 ```text
@@ -200,5 +206,6 @@ http://miocorso.duckdns.org:8080
 ```bash
 docker compose logs -f web
 docker compose logs -f collab
+docker compose logs -f pvp
 docker compose -f docker-compose.yml -f docker-compose.https.yml logs -f caddy
 ```

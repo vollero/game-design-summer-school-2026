@@ -9,6 +9,7 @@ Il progetto contiene:
 - una progressione di script dal ciclo infinito al mini shooter;
 - un finale con canvas 1440x960, controllo a rotazione, bonus arma tripla e bonus riparazione;
 - una arena cooperativa online 5760x3840 con camera 2880x1920 sul giocatore, nomi, WebSocket, controllo touch e fuoco amico disabilitato;
+- una arenaPVP tutti contro tutti con massimo 5 giocatori, visitatori, muri, 5 vite e ultimo sopravvissuto;
 - slide Beamer in LaTeX;
 - PDF delle slide servito dal laboratorio web;
 - container Docker con nginx per servire tutto come sito statico;
@@ -32,7 +33,13 @@ Arena cooperativa:
 http://localhost:8080/collab.html
 ```
 
-La directory del progetto e' montata come volume dentro nginx. Se modifichi HTML, CSS, JS, lezioni o documenti, il cambiamento e' visibile al refresh del browser senza ricostruire l'immagine. Il servizio `collab` gestisce la partita condivisa via WebSocket: se modifichi `server/collab-server.js`, ricrea il container.
+arenaPVP:
+
+```text
+http://localhost:8080/arenaPVP.html
+```
+
+La directory del progetto e' montata come volume dentro nginx. Se modifichi HTML, CSS, JS, lezioni o documenti, il cambiamento e' visibile al refresh del browser senza ricostruire l'immagine. I servizi `collab` e `pvp` gestiscono le partite condivise via WebSocket: se modifichi `server/collab-server.js` o `server/pvp-server.js`, ricrea i container.
 
 ## Struttura
 
@@ -40,13 +47,17 @@ La directory del progetto e' montata come volume dentro nginx. Se modifichi HTML
 site/
   index.html              laboratorio web
   collab.html             arena cooperativa multiplayer
+  arenaPVP.html           arena multiplayer tutti contro tutti
   css/styles.css          stile dell'interfaccia
+  css/arena-pvp.css       stile arenaPVP
   js/app.js               shell del laboratorio
+  js/arena-pvp.js         client arenaPVP
   js/collab.js            client arena cooperativa
   js/edu-game.js          mini engine canvas didattico
   lessons/*.js            progressione degli esempi
 server/
   collab-server.js        server WebSocket co-op senza dipendenze npm
+  pvp-server.js           server WebSocket arenaPVP senza dipendenze npm
 slides/
   lezione-game-loop.tex   presentazione Beamer
 nginx/

@@ -9,11 +9,22 @@ services:
       - ./server:/app/server:ro
     restart: unless-stopped
 
+  pvp:
+    image: node:22-alpine
+    container_name: game-design-school-pvp
+    environment:
+      PORT: 3002
+    command: ["node", "/app/server/pvp-server.js"]
+    volumes:
+      - ./server:/app/server:ro
+    restart: unless-stopped
+
   web:
     image: nginx:1.27-alpine
     container_name: game-design-school-web
     depends_on:
       - collab
+      - pvp
     ports:
       - "${WEB_PORT:-8080}:80"
     volumes:

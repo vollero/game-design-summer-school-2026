@@ -17,7 +17,9 @@ status:
 
 validate:
 	node --check server/collab-server.js
+	node --check server/pvp-server.js
 	node --check site/js/app.js
+	node --check site/js/arena-pvp.js
 	node --check site/js/collab.js
 	node --check site/js/edu-game.js
 	for f in site/lessons/*.js; do node --check "$$f"; done
